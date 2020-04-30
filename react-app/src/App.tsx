@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { gql } from 'apollo-boost'
+import { useQuery } from '@apollo/react-hooks'
+import './App.css'
+import { Product } from './components/Product'
+
+const LOAD_PRODUCT_LIST = gql`
+  {
+    product: fetchProducts {
+      id
+      name
+      price
+      url
+    }
+  }
+`
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const { data, loading, error } = useQuery(LOAD_PRODUCT_LIST)
+
+  console.log('data', data)
+  if (loading) return <h4>Loading ...</h4>
+  if (error) return <h4>{error}</h4>
+  return <div className="App">{data && <Product product={data.product} />}</div>
 }
 
-export default App;
+export default App
